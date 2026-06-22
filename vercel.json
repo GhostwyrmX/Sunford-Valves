@@ -8,7 +8,7 @@
           "value": "sunford-valves-quotation.vercel.app"
         }
       ],
-      "destination": "/quotation/index.html"
+      "destination": "/Quotation/index.html"
     },
     {
       "source": "/:path*",
@@ -18,7 +18,7 @@
           "value": "sunford-valves-quotation.vercel.app"
         }
       ],
-      "destination": "/quotation/:path*"
+      "destination": "/Quotation/:path*"
     },
     {
       "source": "/",
@@ -28,7 +28,7 @@
           "value": "sunford-valves-sizing.vercel.app"
         }
       ],
-      "destination": "/sizing/index.html"
+      "destination": "/Sizing/index.html"
     },
     {
       "source": "/:path*",
@@ -38,7 +38,7 @@
           "value": "sunford-valves-sizing.vercel.app"
         }
       ],
-      "destination": "/sizing/:path*"
+      "destination": "/Sizing/:path*"
     }
   ]
 }
