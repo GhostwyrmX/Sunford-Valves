@@ -1,0 +1,44 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "sunford-valves-quotation.vercel.app"
+        }
+      ],
+      "destination": "/quotation/index.html"
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "sunford-valves-quotation.vercel.app"
+        }
+      ],
+      "destination": "/quotation/:path*"
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "sunford-valves-sizing.vercel.app"
+        }
+      ],
+      "destination": "/sizing/index.html"
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "sunford-valves-sizing.vercel.app"
+        }
+      ],
+      "destination": "/sizing/:path*"
+    }
+  ]
+}

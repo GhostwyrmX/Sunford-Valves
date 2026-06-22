@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Steam & Water Pipe Sizing Calculator | Sunford Valves</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
+      color: #222;
+      background: #f4f5f7;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 0 10px;
+      border-bottom: 2px solid #b03a2e;
+    }
+
+    .header-logo {
+      font-size: 22px;
+      font-weight: 900;
+      color: #b03a2e;
+      letter-spacing: 2px;
+    }
+
+    .header-sub {
+      font-size: 11px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #222;
+    }
+
+    /* PAGE TABS */
+    .page-tabs {
+      display: flex;
+      gap: 0;
+      margin-top: 18px;
+    }
+
+    .page-tab {
+      padding: 13px 28px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      border: 2px solid #ddd;
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      background: #e8e9ec;
+      color: #666;
+      margin-right: 4px;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .page-tab:hover {
+      background: #fff;
+      color: #b03a2e;
+    }
+
+    .page-tab.active {
+      background: #fff;
+      color: #b03a2e;
+      border-color: #b03a2e;
+      border-bottom: 2px solid #fff;
+      position: relative;
+      z-index: 2;
+    }
+
+    .page-content {
+      display: none;
+      background: #fff;
+      border: 2px solid #b03a2e;
+      border-radius: 0 8px 8px 8px;
+      padding: 24px;
+      margin-top: -2px;
+    }
+
+    .page-content.active {
+      display: block;
+    }
+
+    /* SECTION TABS (inside page 1) */
+    .section-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .sec-tab {
+      padding: 9px 22px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      background: transparent;
+      color: #888;
+      margin-right: 3px;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .sec-tab:hover {
+      background: #fef0ef;
+      color: #b03a2e;
+    }
+
+    .sec-tab.active {
+      background: #fff;
+      color: #b03a2e;
+      border-color: #e0e0e0;
+      border-bottom: 2px solid #fff;
+      margin-bottom: -2px;
+    }
+
+    .sec-content {
+      display: none;
+    }
+
+    .sec-content.active {
+      display: block;
+    }
+
+    /* FORM ELEMENTS */
+    .section-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #b03a2e;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 4px;
+      margin: 22px 0 12px;
+    }
+
+    .section-title:first-child {
+      margin-top: 0;
+    }
+
+    .row {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .field {
+      flex: 1;
+      min-width: 170px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #fff;
+      font-size: 13px;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #b03a2e;
+      box-shadow: 0 0 0 2px #f5d5d2;
+    }
+
+    input[readonly] {
+      background: #f5f5f5;
+      color: #777;
+    }
+
+    /* RESULT CARDS */
+    .results-grid {
+      display: flex;
+      gap: 16px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .column {
+      flex: 1;
+      min-width: 230px;
+    }
+
+    .card {
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 13px;
+      border-left: 4px solid #aaa;
+      background: #f7f7f7;
+    }
+
+    .card.steam-up {
+      background: #fdecea;
+      border-left-color: #b03a2e;
+    }
+
+    .card.steam-down {
+      background: #fff5f5;
+      border-left-color: #e06666;
+    }
+
+    .card.water {
+      background: #eaf2fd;
+      border-left-color: #1f618d;
+    }
+
+    .card.catalog {
+      background: #eafaf1;
+      border-left-color: #27ae60;
+    }
+
+    .card.cv {
+      background: #fdf5e8;
+      border-left-color: #d4860b;
+    }
+
+    .card-label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 3px;
+    }
+
+    .val {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 4px 0;
+    }
+
+    .steam-up .val {
+      color: #b03a2e;
+    }
+
+    .steam-down .val {
+      color: #e06666;
+    }
+
+    .water .val {
+      color: #1f618d;
+    }
+
+    .catalog .val {
+      color: #1e8449;
+    }
+
+    .cv .val {
+      color: #b07a00;
+    }
+
+    .sub-val {
+      font-size: 12px;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #27ae60;
+      color: #fff;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin-top: 6px;
+      font-weight: bold;
+    }
+
+    .badge.warn {
+      background: #e67e22;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #888;
+      margin-top: 18px;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+      line-height: 1.6;
+    }
+
+    .warn-box {
+      font-size: 13px;
+      color: #7a4a00;
+      background: #fff3cd;
+      border: 1px solid #ffe69c;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-top: 12px;
+    }
+
+    .info-box {
+      font-size: 13px;
+      color: #1a5e35;
+      background: #eafaf1;
+      border: 1px solid #a9dfbf;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+    }
+
+    /* CV TABLE */
+    .cv-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    .cv-table th {
+      background: #b03a2e;
+      color: #fff;
+      padding: 7px 10px;
+      text-align: left;
+    }
+
+    .cv-table td {
+      padding: 6px 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .cv-table tr:nth-child(even) td {
+      background: #fafafa;
+    }
+
+    .cv-table tr.highlight td {
+      background: #fff5d6;
+      font-weight: bold;
+      color: #7a4a00;
+    }
+
+    /* CATALOG REFERENCE TABLE */
+    .ref-table-wrap {
+      overflow-x: auto;
+      margin-top: 14px;
+    }
+
+    .ref-table {
+      border-collapse: collapse;
+      font-size: 11px;
+      min-width: 700px;
+    }
+
+    .ref-table th {
+      background: #2c3e50;
+      color: #fff;
+      padding: 6px 8px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .ref-table td {
+      padding: 5px 8px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    .ref-table tr:nth-child(even) td {
+      background: #f9f9f9;
+    }
+
+    .ref-table td.highlight {
+      background: #d5f5e3 !important;
+      font-weight: bold;
+      color: #1a5e35;
+    }
+
+    .ref-table td.pressure-col {
+      background: #eaf2fd;
+      font-weight: bold;
+      color: #1f618d;
+    }
+
+    .ref-table td.vel-col {
+      background: #fef9ec;
+      font-style: italic;
+      color: #7a5800;
+    }
+
+    .calc-btn {
+      width: 100%;
+      padding: 9px;
+      background: #b03a2e;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .calc-btn:hover {
+      background: #922b21;
+    }
+
+    /* LOCKSCREEN STYLE */
+    #sizing-lockscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #922b21 0%, #0f172a 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+    }
+
+    .lock-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 40px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      color: #fff;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .lock-logo {
+      font-size: 28px;
+      font-weight: 900;
+      color: #f87171;
+      letter-spacing: 3px;
+      margin-bottom: 5px;
+      text-shadow: 0 0 10px rgba(248, 113, 113, 0.3);
+    }
+
+    .lock-sub {
+      font-size: 11px;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      margin-bottom: 30px;
+    }
+
+    .lock-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #f8fafc;
+    }
+
+    .lock-input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .lock-input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    .lock-input:focus {
+      border-color: #f87171;
+      box-shadow: 0 0 12px rgba(248, 113, 113, 0.4);
+      background: rgba(15, 23, 42, 0.85);
+    }
+
+    .lock-btn {
+      width: 100%;
+      padding: 14px;
+      background: #b03a2e;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(176, 58, 46, 0.3);
+    }
+
+    .lock-btn:hover {
+      background: #c0392b;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(192, 57, 43, 0.45);
+    }
+
+    .lock-btn:active {
+      transform: translateY(1px);
+    }
+
+    .lock-error {
+      color: #f87171;
+      font-size: 13px;
+      margin-top: 12px;
+      min-height: 20px;
+      font-weight: 600;
+    }
+  </style>
+  <script>
+    (function () {
+      if (localStorage.getItem('sunford_sizing_authorized') === 'true') {
+        document.write('<style>#sizing-lockscreen { display: none !important; } #sizingCalculatorContent { display: block !important; }</style>');
+      }
+    })();
+  </script>
+</head>
+
+<body>
+
+  <!-- Lockscreen Overlay -->
+  <div id="sizing-lockscreen">
+    <div class="lock-card">
+      <div class="lock-logo">SUNFORD</div>
+      <div class="lock-sub">Valves Company</div>
+      <div class="lock-title">Pipe Sizing Calculator Access</div>
+      <div class="lock-input-group">
+        <input type="password" id="lock-password-input" class="lock-input" placeholder="Enter security password"
+          onkeydown="if(event.key === 'Enter') checkLockPassword()">
+      </div>
+      <button class="lock-btn" onclick="checkLockPassword()">Verify Access</button>
+      <div id="lock-error-msg" class="lock-error"></div>
+    </div>
+  </div>
+
+  <!-- Main Sizing Calculator Content Wrapper -->
+  <div id="sizingCalculatorContent" style="display: none;">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div>
+        <div class="header-logo">SUNFORD</div>
+        <div class="header-sub">Valves Company &middot; ISO 9001-2015 &middot; IBR Approved</div>
+      </div>
+      <div style="border-left:2px solid #eee; padding-left:16px;">
+        <div class="header-title">Steam &amp; Water Pipe Sizing Calculator</div>
+        <div class="header-sub">Sachin, Surat, Gujarat &nbsp;|&nbsp; sunfordvalves.com</div>
+      </div>
+    </div>
+
+    <!-- PAGE TABS -->
+    <div class="page-tabs">
+      <div class="page-tab active" id="ptab-formula" onclick="switchPage('formula',this)">&#128208; PRS Sizing</div>
+      <div class="page-tab" id="ptab-catalog" onclick="switchPage('catalog',this)">&#128203; Pipe Sizing</div>
+    </div>
+
+    <!-- ═══════════ PAGE 1: PRS Sizing ═══════════ -->
+    <div id="page-formula" class="page-content active">
+
+      <div class="section-tabs">
+        <div class="sec-tab active" id="stab-pipe" onclick="switchSection('pipe',this)">A. PRS Sizing</div>
+        <div class="sec-tab" id="stab-cv" onclick="switchSection('cv',this)">B. Control Valve Sizing</div>
+      </div>
+
+      <!-- ── SECTION A: PIPE SIZING ── -->
+      <div id="sec-pipe" class="sec-content active">
+        <p style="font-size:13px;color:#666;margin:0 0 16px;">Calculates upstream / downstream steam pipe diameters and
+          condensate line diameter using the continuity equation. Pipe NB selected from Schedule&nbsp;40
+          internal-diameter table.</p>
+
+        <div class="section-title">Inputs</div>
+        <div class="row">
+          <div class="field">
+            <label>Capacity / Flow Rate (kg/hr)</label>
+            <input type="number" id="capacity" value="2205" step="5">
+          </div>
+          <div class="field">
+            <label>Upstream Abs. Pressure P1 (kg/cm&#178;a)</label>
+            <input type="number" id="p1_abs" value="11.033" step="0.1">
+          </div>
+          <div class="field">
+            <label>Downstream Abs. Pressure P2 (kg/cm&#178;a)</label>
+            <input type="number" id="p2_abs" value="11.033" step="0.1">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Sat. Temp at P1 (&#176;C) &mdash; auto-calculated</label>
+            <input type="number" id="temp_out" value="" readonly>
+          </div>
+          <div class="field">
+            <label>Steam Velocity Limit (m/s)</label>
+            <input type="number" id="vel_steam" value="25" min="15" max="40" step="1">
+          </div>
+          <div class="field">
+            <label>Water / Condensate Velocity Limit (m/s)</label>
+            <input type="number" id="vel_water" value="2" min="1" max="5" step="0.5">
+          </div>
+        </div>
+
+        <div class="section-title">Results</div>
+        <div class="results-grid">
+
+          <div class="column">
+            <div style="font-size:13px;font-weight:bold;color:#b03a2e;margin-bottom:8px;">&#9312; Upstream Steam Line
+              (P1)</div>
+            <div class="card steam-up">
+              <div class="card-label">Specific Volume v<sub>g1</sub></div>
+              <div class="val" id="vg1_val">--</div>
+              <div class="sub-val">m&#179;/kg</div>
+            </div>
+            <div class="card steam-up">
+              <div class="card-label">Required Internal Diameter d1</div>
+              <div class="val" id="d1out">--</div>
+              <div class="sub-val">Flow area A1: <span id="a1out">--</span> m&#178;</div>
+            </div>
+            <div class="card steam-up" style="background:#fadbd8;">
+              <div class="card-label">Selected Pipe Size (Sch 40)</div>
+              <div class="val" id="nb1Out" style="font-size:15px;">--</div>
+            </div>
+          </div>
+
+          <div class="column">
+            <div style="font-size:13px;font-weight:bold;color:#e06666;margin-bottom:8px;">&#9313; Downstream Steam Line
+              (P2)</div>
+            <div class="card steam-down">
+              <div class="card-label">Specific Volume v<sub>g2</sub></div>
+              <div class="val" id="vg2_val">--</div>
+              <div class="sub-val">m&#179;/kg</div>
+            </div>
+            <div class="card steam-down">
+              <div class="card-label">Required Internal Diameter d2</div>
+              <div class="val" id="d2out">--</div>
+              <div class="sub-val">Flow area A2: <span id="a2out">--</span> m&#178;</div>
+            </div>
+            <div class="card steam-down" style="background:#fbebeb;">
+              <div class="card-label">Selected Pipe Size (Sch 40)</div>
+              <div class="val" id="nb2Out" style="font-size:15px;">--</div>
+            </div>
+          </div>
+
+          <div class="column">
+            <div style="font-size:13px;font-weight:bold;color:#1f618d;margin-bottom:8px;">&#9314; Water / Condensate
+              Line</div>
+            <div class="card water">
+              <div class="card-label">Specific Volume v<sub>f</sub> (liquid)</div>
+              <div class="val" id="vf_val">--</div>
+              <div class="sub-val">m&#179;/kg</div>
+            </div>
+            <div class="card water">
+              <div class="card-label">Required Internal Diameter</div>
+              <div class="val" id="d_water">--</div>
+              <div class="sub-val">Flow area: <span id="a_water">--</span> m&#178;</div>
+            </div>
+            <div class="card water" style="background:#d4e6f1;">
+              <div class="card-label">Selected Pipe Size (Sch 40)</div>
+              <div class="val" id="nb_water" style="font-size:15px;">--</div>
+            </div>
+          </div>
+
+        </div>
+
+        <p class="note">
+          <strong>Formula basis:</strong> &#7745; = Q/3600 (kg/s) &nbsp;|&nbsp; A = &#7745;&middot;v<sub>g</sub>/V
+          &nbsp;|&nbsp; d = &radic;(4A/&pi;) &nbsp;|&nbsp;
+          v<sub>g</sub> from saturation curve fit (bar a) &nbsp;|&nbsp;
+          Sat. temp from Antoine equation (log&#8321;&#8320; base) &nbsp;|&nbsp;
+          v<sub>f</sub> from water density approximation &nbsp;|&nbsp;
+          Schedule 40 internal-diameter table used for NB selection.
+        </p>
+      </div>
+
+      <!-- ── SECTION B: CONTROL VALVE SIZING ── -->
+      <div id="sec-cv" class="sec-content">
+        <p style="font-size:13px;color:#666;margin:0 0 16px;">Calculates the required C<sub>v</sub> / K<sub>v</sub> for
+          a steam control valve using ISA-75.01 / IEC&nbsp;60534-2 methods, and recommends a valve body NB size.</p>
+
+        <div class="section-title">Fluid Selection & Conditions</div>
+        <div class="row">
+          <div class="field">
+            <label>Fluid Type</label>
+            <select id="cv_fluid" onchange="toggleSteamType()">
+              <option value="steam" selected>Steam</option>
+              <option value="water">Water / Liquid</option>
+            </select>
+          </div>
+          <div class="field" id="steam_type_container">
+            <label>Steam State</label>
+            <select id="cv_steam_type" onchange="toggleSteamType()">
+              <option value="saturated" selected>Saturated Steam</option>
+              <option value="superheated">Superheated Steam</option>
+            </select>
+          </div>
+          <div class="field" id="steam_temp_container" style="display:none;">
+            <label>Operating Temperature T1 (°C)</label>
+            <input type="number" id="cv_t1" value="250" step="5">
+          </div>
+        </div>
+        <div class="section-title">Process Inputs</div>
+        <div class="row">
+          <div class="field">
+            <label>Flow Rate (Steam: kg/hr, Water: m³/hr)</label>
+            <input type="number" id="cv_flow" value="2205" step="5">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Inlet Pressure P1 (bar a)</label>
+            <input type="number" id="cv_p1" value="11" step="0.1" oninput="syncCvPressureFromBar()">
+          </div>
+          <div class="field">
+            <label>Inlet Pressure P1 (kg/cm² a)</label>
+            <input type="number" id="cv_p1kg" value="11.22" step="0.1" oninput="syncCvPressureFromKg()">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Outlet Pressure P2 (bar a)</label>
+            <input type="number" id="cv_p2" value="6" step="0.1" oninput="syncCvPressureFromBar()">
+          </div>
+          <div class="field">
+            <label>Outlet Pressure P2 (kg/cm² a)</label>
+            <input type="number" id="cv_p2kg" value="6.12" step="0.1" oninput="syncCvPressureFromKg()">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Valve Type</label>
+            <select id="cv_type" onchange="onValveTypeChange()">
+              <option value="globe">Globe Valve (F&#8343; &asymp; 0.90)</option>
+              <option value="ball">Ball Valve (F&#8343; &asymp; 0.60)</option>
+              <option value="butterfly">Butterfly Valve (F&#8343; &asymp; 0.55)</option>
+              <option value="angle">Angle Valve (F&#8343; &asymp; 0.85)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Valve Velocity (m/s)</label>
+            <input type="number" id="cv_velocity" value="25" step="1">
+          </div>
+          <div class="field">
+            <label>Recovery Factor FL </label>
+            <input type="number" id="cv_fl" value="0.90" step="0.01">
+          </div>
+          <div class="field">
+            <label>Piping Factor FP </label>
+            <input type="number" id="cv_fp" value="1.00" step="0.01">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Design Margin (%) </label>
+            <input type="number" id="cv_margin" value="20" step="1" min="0" max="50">
+          </div>
+          <div class="field"></div>
+          <div class="field"></div>
+        </div>
+
+        <div class="section-title">Results</div>
+        <div class="results-grid">
+          <div class="column">
+            <div class="card cv">
+              <div class="card-label">Flow Condition</div>
+              <div class="val" id="cv_regime" style="font-size:14px; font-weight:bold;">--</div>
+            </div>
+            <div class="card cv">
+              <div class="card-label">&#916;P Available / &#916;P Critical</div>
+              <div class="val" id="cv_dp">--</div>
+              <div class="sub-val">bar</div>
+            </div>
+            <div class="card cv">
+              <div class="card-label">Inlet Steam Density &rho;&#8321;</div>
+              <div class="val" id="cv_rho">--</div>
+              <div class="sub-val">kg/m&#179;</div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="card cv" style="background:#fff3e0;">
+              <div class="card-label">Required C<sub>v</sub> (US gpm/psi&#189;)</div>
+              <div class="val" id="cv_cv">--</div>
+            </div>
+            <div class="card cv" style="background:#fff3e0;">
+              <div class="card-label">Required K<sub>v</sub> (m&#179;/h/bar&#189;)</div>
+              <div class="val" id="cv_kv">--</div>
+            </div>
+            <div class="card cv" style="background:#fff3e0;">
+              <div class="card-label">C<sub>v</sub> with Design Margin (<span id="cv_margin_label">20</span>%)</div>
+              <div class="val" id="cv_cv_design">--</div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="card cv" style="background:#fdf5e8; border-left-color:#d4860b;">
+              <div class="card-label">Recommended Valve Body Size</div>
+              <div class="val" id="cv_size" style="font-size:15px; color:#b07a00;">--</div>
+              <div class="sub-val" id="cv_size_note" style="font-size:12px; line-height:1.4;"></div>
+            </div>
+            <div class="card cv" style="background:#eafaf1; border-left-color:#27ae60;">
+              <div class="card-label">Downstream Pipe Velocity</div>
+              <div class="val" id="cv_velocity_actual">--</div>
+              <div class="sub-val" id="cv_velocity_status">--</div>
+            </div>
+            <div class="card cv" style="background:#f5eada;">
+              <div class="card-label">Valve Rated C<sub>v</sub> at 100% Open</div>
+              <div class="val" id="cv_rated">--</div>
+              <div class="sub-val">Opening at design point: <span id="cv_pct">--</span>%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">Standard Valve C<sub>v</sub> Reference Table</div>
+        <div class="ref-table-wrap">
+          <table class="cv-table">
+            <thead>
+              <tr>
+                <th>NB Size</th>
+                <th>Globe C<sub>v</sub></th>
+                <th>Ball C<sub>v</sub></th>
+                <th>Butterfly C<sub>v</sub></th>
+                <th>Angle C<sub>v</sub></th>
+              </tr>
+            </thead>
+            <tbody id="cv_table_body"></tbody>
+          </table>
+        </div>
+
+        <p class="note">
+          <strong>Method:</strong> ISA-75.01 / IEC 60534-2 for compressible (steam) flow. &nbsp;
+          &#916;P<sub>crit</sub> = F<sub>L</sub>&#178; &times; P1 &times; 0.5. &nbsp;
+          C<sub>v</sub> = W / (63.3 &times; F<sub>P</sub> &times; &radic;(&#916;P<sub>eff</sub> &times; &rho;&#8321;)).
+          &nbsp;
+          K<sub>v</sub> = C<sub>v</sub> &times; 0.865. &nbsp;
+          Water: K<sub>v</sub> = Q / &radic;&#916;P, C<sub>v</sub> = K<sub>v</sub> / 0.865. &nbsp;
+          Body sized to next standard NB where rated C<sub>v</sub> &ge; design C<sub>v</sub>.
+        </p>
+      </div>
+
+    </div><!-- /page-formula -->
+
+    <!-- ═══════════ PAGE 2: Pipe Sizing ═══════════ -->
+    <div id="page-catalog" class="page-content">
+
+      <div class="info-box">
+        <strong>&#10003; Full catalog digitized (0.4 &ndash; 42 bar g):</strong>&nbsp;
+        Sunford's "Steam Pipe Sizing (Carrying Capacity in kg/h)" table are embedded.
+        Pressure range 0.4&ndash;42 bar(g).
+        Capacities interpolated log-linearly between adjacent diameter columns and adjacent pressure rows.
+      </div>
+
+      <div class="section-title">Inputs</div>
+      <div class="row">
+        <div class="field">
+          <label>Capacity / Flow Rate (kg/hr)</label>
+          <input type="number" id="cat_capacity" value="2205" step="5">
+        </div>
+        <div class="field">
+          <label>Line Pressure (bar gauge)</label>
+          <input type="number" id="cat_pressure" value="15" step="0.1" min="0.4" max="42"
+            oninput="syncPressureFromBar()">
+        </div>
+        <div class="field">
+          <label>Line Pressure (kg/cm² g)</label>
+          <input type="number" id="cat_pressure_kg" value="15.30" step="0.1" oninput="syncPressureFromKg()">
+        </div>
+        <div class="field">
+          <label>Velocity (m/s)</label>
+          <select id="cat_velocity">
+            <option value="15">15 m/s</option>
+            <option value="25" selected>25 m/s</option>
+            <option value="40">40 m/s</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-title">Results</div>
+      <div class="results-grid">
+        <div class="column">
+          <div class="card catalog">
+            <div class="card-label">Interpolated Required Diameter</div>
+            <div class="val" id="cat_dia">--</div>
+            <div class="sub-val" id="cat_detail"></div>
+          </div>
+          <div class="card catalog" style="background:#d5f5e3;">
+            <div class="card-label">Selected Pipe NB (Catalog Match)</div>
+            <div class="val" id="cat_nb" style="font-size:15px;">--</div>
+            <div class="badge" id="cat_badge">&#10003; From Sunford Catalog Table</div>
+          </div>
+        </div>
+        <div class="column" style="flex:2;min-width:300px;">
+          <div id="cat_warning" class="warn-box" style="display:none;"></div>
+          <div class="card" style="background:#f8f9fa;border-left-color:#555;">
+            <div class="card-label" style="font-weight:bold;color:#333;margin-bottom:8px;">Interpolation Detail</div>
+            <div id="cat_interp_detail" style="font-size:12px;color:#555;line-height:1.9;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:28px;">
+        Catalog Table View &mdash; <span id="cat_table_label"
+          style="color:#555;font-weight:normal;font-size:12px;">results will be highlighted below</span>
+      </div>
+      <div class="ref-table-wrap">
+        <table class="ref-table">
+          <thead id="cat_ref_thead"></thead>
+          <tbody id="cat_ref_tbody"></tbody>
+        </table>
+      </div>
+
+      <p class="note">
+        <strong>Catalog coverage — Pressures:</strong>
+        0.4, 0.7, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 10.0, 14.0, 15.0, 17.0, 20.0, 24.0, 28.0, 34.0, 42.0 bar(g).
+        <strong>Diameters:</strong> 15 &ndash; 300 mm (14 standard sizes).
+      </p>
+
+    </div><!-- /page-catalog -->
+  </div><!-- /sizingCalculatorContent -->
+
+  <script>
+    /* ─── PASSWORD PROTECTION ─── */
+    function checkLockPassword() {
+      const passwordInput = document.getElementById('lock-password-input');
+      const errorMsg = document.getElementById('lock-error-msg');
+      const password = passwordInput.value;
+
+      if (password === 'Kapil0192' || password === 'sunford') {
+        localStorage.setItem('sunford_sizing_authorized', 'true');
+        document.getElementById('sizing-lockscreen').style.display = 'none';
+        document.getElementById('sizingCalculatorContent').style.display = 'block';
+      } else {
+        errorMsg.textContent = 'Incorrect password. Please try again.';
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    }
+
+    /* ─── TAB SWITCHING ─── */
+    function switchPage(name, el) {
+      document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.page-content').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('page-' + name).classList.add('active');
+    }
+    function switchSection(name, el) {
+      document.querySelectorAll('.sec-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.sec-content').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('sec-' + name).classList.add('active');
+    }
+
+    /* ─── SECTION A: PIPE SIZING ─── */
+    const pipeSizesSch40 = [
+      ['1/2"', 15.8], ['3/4"', 20.9], ['1"', 26.6], ['1-1/4"', 35.1], ['1-1/2"', 40.9],
+      ['2"', 52.5], ['2-1/2"', 62.7], ['3"', 77.9], ['4"', 102.3], ['5"', 128.2],
+      ['6"', 154.1], ['8"', 202.7], ['10"', 254.5], ['12"', 303.2], ['14"', 333.4],
+      ['16"', 381.0], ['18"', 428.7], ['20"', 477.9], ['24"', 574.6]
+    ];
+    function selectPipe(dmm) {
+      for (const [l, id] of pipeSizesSch40) if ((id + 1.5) >= dmm) return l + ' NB  (ID ' + id + ' mm)';
+      return '> 24" NB — consult engineering';
+    }
+
+    function getSatTemp(pAbs_kgcm2) {
+      if (pAbs_kgcm2 <= 0.01) return 0;
+      const pb = pAbs_kgcm2 * 0.980665;
+      return Math.max(0, (3816.44 / (11.6834 - Math.log10(pb))) - 226.87);
+    }
+
+    function getVg(pAbs_kgcm2) {
+      if (pAbs_kgcm2 <= 0.01) return 0;
+      const pBar = pAbs_kgcm2 * 0.980665;
+      return 1.745 * Math.pow(pBar, -0.952);
+    }
+
+    function getVf(T) {
+      if (T <= 0) return 0.001;
+      const d = 1000 * (1 - (Math.pow(T - 4, 2) / (119000 + 1365 * T)));
+      return d > 0 ? 1 / d : 0.001;
+    }
+
+    function toggleSteamType() {
+      const fluid = document.getElementById('cv_fluid').value;
+      const steamType = document.getElementById('cv_steam_type').value;
+
+      if (fluid === 'water') {
+        document.getElementById('steam_type_container').style.display = 'none';
+        document.getElementById('steam_temp_container').style.display = 'none';
+      } else {
+        document.getElementById('steam_type_container').style.display = 'block';
+        if (steamType === 'superheated') {
+          document.getElementById('steam_temp_container').style.display = 'block';
+        } else {
+          document.getElementById('steam_temp_container').style.display = 'none';
+        }
+      }
+      runCVSizing();
+    }
+
+    function runCalculator() {
+      const Q = parseFloat(document.getElementById('capacity').value);
+      const p1 = parseFloat(document.getElementById('p1_abs').value);
+      const p2 = parseFloat(document.getElementById('p2_abs').value);
+      const vs = parseFloat(document.getElementById('vel_steam').value);
+      const vw = parseFloat(document.getElementById('vel_water').value);
+      if ([Q, p1, p2, vs, vw].some(isNaN) || Q <= 0) return;
+      const m = Q / 3600, T1 = getSatTemp(p1);
+      const vg1 = getVg(p1), vg2 = getVg(p2), vf = getVf(T1);
+      document.getElementById('temp_out').value = T1.toFixed(1);
+      document.getElementById('vg1_val').textContent = vg1.toFixed(4);
+      document.getElementById('vg2_val').textContent = vg2.toFixed(4);
+      document.getElementById('vf_val').textContent = vf.toFixed(6);
+      function calc(v, V) { const A = m * v / V; return { A, d: Math.sqrt(4 * A / Math.PI) * 1000 }; }
+      const r1 = calc(vg1, vs);
+      document.getElementById('a1out').textContent = r1.A.toFixed(5);
+      document.getElementById('d1out').textContent = r1.d.toFixed(1) + ' mm';
+      document.getElementById('nb1Out').textContent = selectPipe(r1.d);
+      const r2 = calc(vg2, vs);
+      document.getElementById('a2out').textContent = r2.A.toFixed(5);
+      document.getElementById('d2out').textContent = r2.d.toFixed(1) + ' mm';
+      document.getElementById('nb2Out').textContent = selectPipe(r2.d);
+      const rw = calc(vf, vw);
+      document.getElementById('a_water').textContent = rw.A.toFixed(5);
+      document.getElementById('d_water').textContent = rw.d.toFixed(1) + ' mm';
+      document.getElementById('nb_water').textContent = selectPipe(rw.d);
+    }
+    ['capacity', 'p1_abs', 'p2_abs', 'vel_steam', 'vel_water'].forEach(id =>
+      document.getElementById(id).addEventListener('input', runCalculator));
+
+    /* ─── SECTION B: CONTROL VALVE SIZING ─── */
+    const CV_TABLE = [
+      { nb: '1/2" NB (15mm)', globe: 5, ball: 14, butterfly: 9, angle: 8, d: 15 },
+      { nb: '3/4" NB (20mm)', globe: 8, ball: 25, butterfly: 16, angle: 15, d: 20 },
+      { nb: '1" NB (25mm)', globe: 12, ball: 42, butterfly: 28, angle: 25, d: 25 },
+      { nb: '1-1/4" NB (32mm)', globe: 20, ball: 70, butterfly: 45, angle: 42, d: 32 },
+      { nb: '1-1/2" NB (40mm)', globe: 30, ball: 105, butterfly: 68, angle: 63, d: 40 },
+      { nb: '2" NB (50mm)', globe: 52, ball: 175, butterfly: 115, angle: 105, d: 50 },
+      { nb: '2-1/2" NB (65mm)', globe: 85, ball: 265, butterfly: 175, angle: 160, d: 65 },
+      { nb: '3" NB (80mm)', globe: 120, ball: 420, butterfly: 275, angle: 255, d: 80 },
+      { nb: '4" NB (100mm)', globe: 210, ball: 700, butterfly: 460, angle: 425, d: 100 },
+      { nb: '5" NB (125mm)', globe: 330, ball: 1120, butterfly: 735, angle: 680, d: 125 },
+      { nb: '6" NB (150mm)', globe: 450, ball: 1680, butterfly: 1100, angle: 1020, d: 150 },
+      { nb: '8" NB (200mm)', globe: 780, ball: 2940, butterfly: 1930, angle: 1785, d: 200 },
+      { nb: '10" NB (250mm)', globe: 1150, ball: 4620, butterfly: 3030, angle: 2805, d: 250 },
+      { nb: '12" NB (300mm)', globe: 1600, ball: 6720, butterfly: 4410, angle: 4080, d: 300 },
+    ];
+    const FL_DEF = { globe: 0.90, ball: 0.60, butterfly: 0.55, angle: 0.85 };
+    const XT_DEF = { globe: 0.72, ball: 0.30, butterfly: 0.35, angle: 0.65 };
+
+    function autoUpdateFactors() {
+      const valveType = document.getElementById('cv_type').value;
+      document.getElementById('cv_fl').value = FL_DEF[valveType];
+    }
+    function onValveTypeChange() { autoUpdateFactors(); }
+
+    function runCVSizing() {
+      const fluid = document.getElementById('cv_fluid').value;
+      const vtype = document.getElementById('cv_type').value;
+      const sizeNoteElement = document.getElementById('cv_size_note');
+      const regimeElement = document.getElementById('cv_regime');
+
+      let P1 = parseFloat(document.getElementById('cv_p1').value);
+      let P2 = parseFloat(document.getElementById('cv_p2').value);
+      if (isNaN(P1)) P1 = (parseFloat(document.getElementById('cv_p1kg').value) || 0) / 1.01972;
+      if (isNaN(P2)) P2 = (parseFloat(document.getElementById('cv_p2kg').value) || 0) / 1.01972;
+
+      const FL = parseFloat(document.getElementById('cv_fl').value) || 0.90;
+      const margin = parseFloat(document.getElementById('cv_margin').value || 15) / 100;
+
+      /* ── WATER MODE ── */
+      if (fluid === 'water') {
+        const Q = parseFloat(document.getElementById('cv_flow').value) || 0;
+        const dP_avail = Math.max(P1 - P2, 0.01);
+
+        const Pv = 0.0317;
+        const P_crit = 220.6;
+        const F_F = 0.96 - 0.28 * Math.sqrt(Pv / P_crit);
+
+        const dP_choked = FL * FL * (P1 - F_F * Pv);
+        const dP_eff = Math.min(dP_avail, dP_choked);
+        const isChoked = dP_avail >= dP_choked;
+
+        const Kv_req = Q / Math.sqrt(dP_eff);
+        const Cv_req = Kv_req / 0.865;
+        const Cv_des = Cv_req * (1 + margin);
+
+        let waterStatusColor = '#1e8449';
+        if (isChoked) {
+          if (P2 <= Pv) {
+            regimeElement.textContent = '⚠ Severe Flashing Conditions';
+            waterStatusColor = '#b03a2e';
+            sizeNoteElement.innerHTML = `
+          <div style="color: #b03a2e; font-weight: bold; margin-top: 5px;">Flashing Risk Alert:</div>
+          <p style="margin: 4px 0; line-height: 1.4;">Outlet pressure drops below vapor pressure. Severe mechanical erosion expected.</p>`;
+          } else {
+            regimeElement.textContent = '⚠ Severe Cavitation Status';
+            waterStatusColor = '#e67e22';
+            sizeNoteElement.innerHTML = `
+          <div style="color: #e67e22; font-weight: bold; margin-top: 5px;">Cavitation Warning:</div>
+          <p style="margin: 4px 0; line-height: 1.4;">Micro-implosions forming near plug boundary walls.</p>`;
+          }
+        } else {
+          regimeElement.textContent = '✓ Sub-critical Liquid Flow';
+          sizeNoteElement.innerHTML = `<span style="color: #1e8449; font-weight: bold;">✓ Stable Sizing Profile</span>`;
+        }
+        regimeElement.style.color = waterStatusColor;
+
+        document.getElementById('cv_dp').textContent = dP_avail.toFixed(2) + ' / ' + dP_choked.toFixed(2);
+        document.getElementById('cv_rho').textContent = '1000.000';
+        document.getElementById('cv_cv').textContent = Cv_req.toFixed(1);
+        document.getElementById('cv_kv').textContent = Kv_req.toFixed(1);
+        document.getElementById('cv_cv_design').textContent = Cv_des.toFixed(1);
+
+        let sel = CV_TABLE[CV_TABLE.length - 1];
+        for (const r of CV_TABLE) { if (r[vtype] >= Cv_des) { sel = r; break; } }
+        document.getElementById('cv_size').textContent = sel.nb;
+        document.getElementById('cv_rated').textContent = sel[vtype];
+        const pct = Math.min(100, (Cv_des / sel[vtype] * 100)).toFixed(0);
+        document.getElementById('cv_pct').textContent = pct;
+        document.getElementById('cv_velocity_actual').textContent = 'N/A';
+        document.getElementById('cv_velocity_status').textContent = 'Water mode';
+
+        updateTableHighlight(sel.nb);
+        return;
+      }
+
+      /* ── STEAM MODE ── */
+      let W = parseFloat(document.getElementById('cv_flow').value);
+      let FP = parseFloat(document.getElementById('cv_fp').value) || 1.0;
+
+      if (document.getElementById('cv_margin_label')) {
+        document.getElementById('cv_margin_label').textContent = document.getElementById('cv_margin').value;
+      }
+      if ([W, P1, P2, FL, FP].some(isNaN) || W <= 0 || P1 <= 0 || P2 <= 0) return;
+
+      const steamState = document.getElementById('cv_steam_type').value;
+      const P1_kgcm2 = P1 * 1.01972;
+      let vg1 = getVg(P1_kgcm2);
+      let F_gamma = 1.13 / 1.40;
+
+      if (steamState === 'superheated') {
+        const t1 = parseFloat(document.getElementById('cv_t1').value) || 250;
+        const t_sat = getSatTemp(P1_kgcm2);
+        if (t1 > t_sat) {
+          vg1 = vg1 * ((t1 + 273.15) / (t_sat + 273.15));
+        }
+        F_gamma = 1.30 / 1.40;
+      }
+      const rho1 = 1 / vg1;
+
+      const P2_kgcm2 = P2 * 1.01972;
+      let vg2 = getVg(P2_kgcm2);
+      if (steamState === 'superheated') {
+        const t1 = parseFloat(document.getElementById('cv_t1').value) || 250;
+        const t_sat = getSatTemp(P1_kgcm2);
+        const t2 = Math.max(t_sat - 20, t1 - (P1 - P2) * 4);
+        vg2 = vg2 * ((t2 + 273.15) / (getSatTemp(P2_kgcm2) + 273.15));
+      }
+
+      const dP_avail = P1 - P2;
+      const x = dP_avail / P1;
+      const currentXT = XT_DEF[vtype] || 0.72;
+
+      const x_crit = FL * FL * currentXT * F_gamma;
+      const x_eff = Math.min(x, x_crit);
+      const choked = x >= x_crit;
+      const Y = 1 - (x_eff / (3 * x_crit));
+
+      const Cv_req = W / (27.3 * FP * Y * Math.sqrt(x_eff * P1 * rho1));
+      const Kv_req = Cv_req * 0.865;
+      const Cv_des = Cv_req * (1 + margin);
+
+      document.getElementById('cv_dp').textContent = dP_avail.toFixed(2) + ' / ' + (x_crit * P1).toFixed(2);
+      document.getElementById('cv_rho').textContent = rho1.toFixed(3);
+      document.getElementById('cv_cv').textContent = Cv_req.toFixed(1);
+      document.getElementById('cv_kv').textContent = Kv_req.toFixed(1);
+      document.getElementById('cv_cv_design').textContent = Cv_des.toFixed(1);
+
+      // DECOUPLED PIPING STEP BOUNDARY ENGINE
+      let valve_idx = CV_TABLE.findIndex(r => r[vtype] >= Cv_des);
+      if (valve_idx === -1) valve_idx = CV_TABLE.length - 1;
+
+      const inlet_vel_limit = 60;
+      let sel_valve, valve_inlet_vel;
+      while (true) {
+        sel_valve = CV_TABLE[valve_idx];
+        let v_area = Math.PI * Math.pow(sel_valve.d / 1000, 2) / 4;
+        valve_inlet_vel = ((W / 3600) * vg1) / v_area;
+        if (valve_inlet_vel > inlet_vel_limit && valve_idx < CV_TABLE.length - 1) {
+          valve_idx++;
+        } else {
+          break;
+        }
+      }
+
+      const downstream_vel_limit = parseFloat(document.getElementById('cv_velocity').value) || 25;
+      const mass_flow_kgs = W / 3600;
+      const true_volumetric_flow = mass_flow_kgs * vg2;
+      const required_pipe_area = true_volumetric_flow / downstream_vel_limit;
+      const min_required_id_mm = Math.sqrt((4 * required_pipe_area) / Math.PI) * 1000;
+
+      let recommended_pipe_label = "";
+      let matching_pipe_id_mm = sel_valve.d;
+
+      for (const [label, id_mm] of pipeSizesSch40) {
+        if (id_mm >= min_required_id_mm) {
+          recommended_pipe_label = label + " NB";
+          matching_pipe_id_mm = id_mm;
+          break;
+        }
+      }
+      if (!recommended_pipe_label) {
+        recommended_pipe_label = '> 24" NB (Custom Expansion Line Required)';
+        matching_pipe_id_mm = 574.6;
+      }
+
+      const actual_downstream_pipe_area = Math.PI * Math.pow(matching_pipe_id_mm / 1000, 2) / 4;
+      const final_downstream_velocity = true_volumetric_flow / actual_downstream_pipe_area;
+
+      const pct = Math.min(100, (Cv_des / sel_valve[vtype] * 100));
+      document.getElementById('cv_size').textContent = sel_valve.nb;
+      document.getElementById('cv_rated').textContent = sel_valve[vtype];
+      document.getElementById('cv_pct').textContent = pct.toFixed(0);
+      document.getElementById('cv_velocity_actual').textContent = final_downstream_velocity.toFixed(1) + ' m/s';
+
+      let velStatus = '✓ Safe Line Velocity';
+      if (final_downstream_velocity > downstream_vel_limit + 5) {
+        velStatus = '✖ Velocity Target Breached';
+        document.getElementById('cv_velocity_status').style.color = '#b03a2e';
+      } else {
+        velStatus = '✓ Within Constraints';
+        document.getElementById('cv_velocity_status').style.color = '#1e8449';
+      }
+      document.getElementById('cv_velocity_status').textContent = velStatus;
+
+      const valve_size_numeric = parseFloat(sel_valve.nb);
+      const pipe_size_numeric = parseFloat(recommended_pipe_label);
+
+      if (pipe_size_numeric > valve_size_numeric + 3) {
+        regimeElement.textContent = '⚠ Extreme Downstream Volumetric Expansion';
+        regimeElement.style.color = '#e67e22';
+
+        sizeNoteElement.innerHTML = `
+      <div style="color: #e67e22; font-weight: bold; margin-top: 5px;">⚠ Critical Volumetric Expansion Warning:</div>
+      <p style="margin: 4px 0; line-height: 1.4;">
+        Steam volume expanded <strong>${(vg2 / vg1).toFixed(0)}x</strong> dropping from P1 to P2. The <strong>${sel_valve.nb.split(' ')[0]} valve body</strong> handles the flow capacity correctly at <strong>${pct.toFixed(0)}% travel</strong>, but downstream velocity breaks constraints.
+      </p>`;
+      } else if (pipe_size_numeric > valve_size_numeric) {
+        regimeElement.textContent = '✓ Stable Highly Controllable Flow';
+        regimeElement.style.color = '#1e8449';
+
+        sizeNoteElement.innerHTML = `
+      <div style="color: #1e8449; font-weight: bold; margin-top: 5px;">✓ Optimal Selection:</div>
+      <p style="margin: 4px 0; line-height: 1.4;">
+        Valve modulates effectively at <strong>${pct.toFixed(0)}% opening travel</strong> inside an affordable <strong>${sel_valve.nb.split(' ')[0]} housing</strong>.
+      </p>
+      <div style="background: #eafaf1; border: 1px solid #a9dfbf; padding: 6px 10px; border-radius: 4px; margin-top: 6px; font-size: 11px; color: #145a32;">
+        <strong>Piping Design Note:</strong> Weld a standard <strong>${sel_valve.nb.split(' ')[0]} x ${recommended_pipe_label.split(' ')[0]} concentric swaged expander</strong> directly to the valve outlet flange to maintain safe fluid speeds downstream.
+      </div>`;
+      } else if (pct < 15) {
+        regimeElement.textContent = '⚠ Low-Opening Seat Erosion Risk';
+        regimeElement.style.color = '#e67e22';
+
+        sizeNoteElement.innerHTML = `
+      <div style="color: #e67e22; font-weight: bold; margin-top: 5px;">Low-Lift Seat Clearance Warning:</div>
+      <p style="margin: 4px 0; line-height: 1.4;">
+        Even at minimum body dimensions, flow constraints throttle the plug at a low <strong>${pct.toFixed(0)}% open position</strong>.
+      </p>`;
+      } else {
+        regimeElement.textContent = choked ? '⚠ Choked / Critical Flow' : '✓ Sub-critical Flow';
+        regimeElement.style.color = choked ? '#b03a2e' : '#1e8449';
+        sizeNoteElement.innerHTML = `<span style="color: #1e8449; font-weight: bold;">✓ Balanced Line Architecture:</span> Design point matches smoothly at a stable <strong>${pct.toFixed(0)}% opening range</strong>.`;
+      }
+
+      updateTableHighlight(sel_valve.nb);
+    }
+
+    function updateTableHighlight(highlightNb) {
+      const tbody = document.getElementById('cv_table_body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      CV_TABLE.forEach(r => {
+        const tr = document.createElement('tr');
+        if (r.nb === highlightNb) tr.className = 'highlight';
+        tr.innerHTML = '<td>' + r.nb + '</td><td>' + r.globe + '</td><td>' + r.ball + '</td><td>' + r.butterfly + '</td><td>' + r.angle + '</td>';
+        tbody.appendChild(tr);
+      });
+    }
+
+    /* ─── PAGE 2: Pipe Sizing ─── */
+    const CAT_DIAMETERS = [15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 200, 250, 300];
+    const CATALOG_TABLE = [
+      { pressure: 0.4, rows: { 15: [7, 14, 24, 37, 52, 99, 145, 213, 394, 648, 917, 1606, 2590, 3678], 25: [10, 25, 40, 62, 92, 162, 265, 384, 675, 972, 1457, 2806, 4101, 5936], 40: [17, 35, 64, 102, 142, 265, 403, 576, 1037, 1670, 2303, 4318, 6909, 9500] } },
+      { pressure: 0.7, rows: { 15: [7, 16, 28, 40, 59, 109, 166, 250, 431, 716, 1145, 1575, 2816, 4629], 25: [12, 25, 45, 72, 100, 182, 287, 430, 716, 1108, 1712, 2417, 4532, 7251], 40: [18, 37, 68, 106, 167, 298, 428, 630, 1108, 1712, 2814, 4045, 10323, 10323] } },
+      { pressure: 1.0, rows: { 15: [8, 17, 29, 43, 65, 112, 182, 260, 445, 730, 1160, 1660, 3099, 4869], 25: [12, 26, 48, 72, 100, 193, 300, 465, 640, 1150, 1800, 2500, 4815, 7333], 40: [19, 39, 71, 112, 172, 311, 465, 640, 1150, 1580, 2814, 4545, 6277, 10370] } },
+      { pressure: 2.0, rows: { 15: [12, 25, 45, 70, 100, 182, 280, 410, 715, 1215, 1755, 2520, 4815, 7425], 25: [19, 43, 70, 112, 162, 295, 428, 656, 1010, 1895, 2925, 4175, 7678, 11997], 40: [30, 64, 115, 178, 275, 475, 745, 1010, 1895, 2925, 4175, 6217, 8743, 16796] } },
+      { pressure: 3.0, rows: { 15: [16, 37, 60, 93, 127, 245, 385, 535, 925, 1505, 2040, 3983, 6217, 8743], 25: [26, 56, 100, 152, 225, 425, 632, 910, 1580, 2480, 3440, 6779, 10269, 14316], 40: [41, 87, 157, 250, 357, 595, 1025, 1460, 2540, 4050, 5940, 10476, 16470, 22950] } },
+      { pressure: 4.0, rows: { 15: [19, 42, 70, 108, 156, 281, 432, 635, 1166, 1685, 2460, 4618, 7121, 10358], 25: [30, 63, 115, 180, 270, 450, 742, 1080, 1980, 2925, 4225, 7866, 12225, 17304], 40: [49, 116, 197, 295, 456, 796, 1247, 1825, 3120, 4940, 7050, 12661, 19663, 27816] } },
+      { pressure: 5.0, rows: { 15: [22, 49, 87, 128, 187, 352, 526, 770, 1295, 2105, 2835, 5548, 8586, 11947], 25: [36, 81, 135, 211, 308, 548, 885, 1265, 2110, 3540, 5150, 8865, 14268, 20051], 40: [59, 131, 225, 338, 495, 855, 1350, 1890, 3510, 5400, 7870, 13761, 23205, 32244] } },
+      { pressure: 6.0, rows: { 15: [26, 59, 105, 153, 225, 425, 632, 925, 1555, 2525, 3400, 6654, 10297, 14328], 25: [43, 97, 162, 253, 370, 658, 1065, 1520, 2530, 4250, 6175, 10629, 17108, 24042], 40: [71, 157, 270, 405, 595, 1025, 1620, 2270, 4210, 6475, 9445, 16515, 27849, 38697] } },
+      { pressure: 7.0, rows: { 15: [29, 63, 110, 165, 260, 445, 705, 952, 1815, 2765, 3990, 7390, 12015, 16096], 25: [49, 114, 190, 288, 450, 785, 1205, 1750, 3025, 4815, 6900, 12288, 19377, 27080], 40: [76, 177, 303, 455, 690, 1210, 1865, 2520, 4585, 7560, 10880, 19141, 30978, 43470] } },
+      { pressure: 8.0, rows: { 15: [32, 70, 126, 190, 285, 475, 800, 1125, 1990, 3025, 4540, 8042, 12625, 17728], 25: [54, 122, 205, 320, 465, 810, 1260, 1870, 3240, 5220, 7120, 13140, 21600, 33210], 40: [84, 192, 327, 510, 730, 1370, 2065, 3120, 5135, 8395, 12470, 21247, 33669, 46858] } },
+      { pressure: 10.0, rows: { 15: [41, 95, 155, 250, 372, 626, 1012, 1465, 2495, 3995, 5860, 9994, 16172, 22713], 25: [66, 145, 257, 405, 562, 990, 1530, 2205, 3825, 6295, 8995, 15966, 25860, 35890], 40: [104, 216, 408, 615, 910, 1635, 2545, 3600, 6230, 9880, 14390, 26621, 41011, 57560] } },
+      { pressure: 14.0, rows: { 15: [50, 121, 205, 310, 465, 810, 1270, 1870, 3220, 5215, 7390, 12921, 20538, 29016], 25: [85, 195, 331, 520, 740, 1375, 2080, 3120, 5200, 8500, 12560, 21720, 34139, 47128], 40: [126, 305, 565, 825, 1210, 2195, 3425, 4735, 8510, 13050, 18630, 35548, 54883, 76534] } },
+      { pressure: 15, rows: { 15: [85, 148, 241, 417, 567, 935, 1335, 2061, 3548, 5574, 8052, 13943, 21977, 31521], 25: [141, 247, 402, 695, 945, 1559, 2224, 3434, 5913, 9292, 13420, 23239, 36629, 52536], 40: [226, 395, 643, 1112, 1513, 2494, 3559, 5495, 9461, 14868, 21472, 37182, 58607, 84057] } },
+      { pressure: 17, rows: { 15: [96, 167, 271, 470, 639, 1053, 1503, 2321, 3996, 6278, 9067, 15702, 24749, 35497], 25: [159, 278, 453, 783, 1064, 1756, 2505, 3864, 6659, 10464, 15113, 26170, 41249, 59162], 40: [255, 445, 724, 1252, 1704, 2809, 4008, 6188, 10654, 16743, 24180, 41872, 65999, 94659] } },
+      { pressure: 20, rows: { 15: [112, 195, 317, 549, 747, 1232, 1758, 2715, 4673, 7343, 10606, 18365, 28948, 41519], 25: [186, 325, 530, 915, 1245, 2054, 2929, 4523, 7788, 12239, 17677, 30609, 48247, 69199], 40: [298, 520, 847, 1465, 1993, 3285, 4688, 7238, 12463, 19548, 28282, 48975, 77196, 110718] } },
+      { pressure: 24, rows: { 15: [133, 232, 378, 654, 889, 1466, 2094, 3232, 5565, 8744, 12629, 21868, 34468, 49437], 25: [221, 387, 631, 1090, 1482, 2445, 3488, 5386, 9274, 14573, 20048, 36448, 57448, 82396], 40: [355, 620, 1008, 1744, 2373, 3912, 5582, 8618, 14839, 23319, 33676, 58316, 91918, 131833] } },
+      { pressure: 28, rows: { 15: [154, 269, 437, 757, 1029, 1696, 2422, 3739, 6437, 10114, 14608, 25296, 39871, 57186], 25: [256, 448, 729, 1261, 1714, 2828, 4035, 6230, 10728, 16858, 24347, 42161, 66453, 95312], 40: [410, 717, 1167, 2017, 2745, 4525, 6457, 9969, 17164, 26974, 38955, 67457, 106326, 152498] } },
+      { pressure: 34, rows: { 15: [186, 324, 528, 913, 1241, 2047, 2923, 4512, 7767, 12205, 17627, 30523, 48112, 69004], 25: [309, 541, 880, 1522, 2069, 3413, 4869, 7518, 12944, 20342, 29378, 50874, 80186, 115009], 40: [495, 865, 1408, 2434, 3312, 5460, 7791, 12029, 20712, 32548, 47005, 81397, 128299, 184013] } },
+      { pressure: 42, rows: { 15: [231, 401, 654, 1131, 1537, 2535, 3620, 5588, 9620, 15117, 21833, 37806, 59591, 85469], 25: [382, 670, 1090, 1885, 2562, 4227, 6030, 9311, 16033, 25195, 36388, 63013, 99319, 142451], 40: [613, 1071, 1744, 3015, 4103, 6763, 9650, 14900, 25654, 40315, 58221, 100819, 158913, 227920] } }
+    ];
+    const NB_FOR_DIA = { 15: '1/2" NB', 20: '3/4" NB', 25: '1" NB', 32: '1-1/4" NB', 40: '1-1/2" NB', 50: '2" NB', 65: '2-1/2" NB', 80: '3" NB', 100: '4" NB', 125: '5" NB', 150: '6" NB', 200: '8" NB', 250: '10" NB', 300: '12" NB' };
+    const BAR_TO_KGCM2 = 1.01972;
+
+    function syncCvPressureFromBar() {
+      const p1 = parseFloat(document.getElementById('cv_p1').value) || 0;
+      const p2 = parseFloat(document.getElementById('cv_p2').value) || 0;
+      document.getElementById('cv_p1kg').value = (p1 * BAR_TO_KGCM2).toFixed(2);
+      document.getElementById('cv_p2kg').value = (p2 * BAR_TO_KGCM2).toFixed(2);
+    }
+    function syncCvPressureFromKg() {
+      const p1 = parseFloat(document.getElementById('cv_p1kg').value) || 0;
+      const p2 = parseFloat(document.getElementById('cv_p2kg').value) || 0;
+      document.getElementById('cv_p1').value = (p1 / BAR_TO_KGCM2).toFixed(2);
+      document.getElementById('cv_p2').value = (p2 / BAR_TO_KGCM2).toFixed(2);
+    }
+    function syncPressureFromBar() {
+      const bar = parseFloat(document.getElementById('cat_pressure').value);
+      if (!isNaN(bar)) document.getElementById('cat_pressure_kg').value = (bar * BAR_TO_KGCM2).toFixed(2);
+      runCatalogLookup();
+    }
+    function syncPressureFromKg() {
+      const kg = parseFloat(document.getElementById('cat_pressure_kg').value);
+      if (!isNaN(kg)) document.getElementById('cat_pressure').value = (kg / BAR_TO_KGCM2).toFixed(2);
+      runCatalogLookup();
+    }
+
+    function interstateSaturate(c1, d1, c2, d2, ct) {
+      c1 = Math.max(c1, 0.1); c2 = Math.max(c2, 0.1); ct = Math.max(ct, 0.1);
+      return d1 + ((Math.log(ct) - Math.log(c1)) / (Math.log(c2) - Math.log(c1))) * (d2 - d1);
+    }
+    function interpDia(arr, target) {
+      if (target <= arr[0]) return interstateSaturate(arr[0], CAT_DIAMETERS[0], arr[1], CAT_DIAMETERS[1], target);
+      for (let i = 0; i < arr.length - 1; i++)
+        if (target >= arr[i] && target <= arr[i + 1])
+          return interstateSaturate(arr[i], CAT_DIAMETERS[i], arr[i + 1], CAT_DIAMETERS[i + 1], target);
+      const n = arr.length;
+      return interstateSaturate(arr[n - 2], CAT_DIAMETERS[n - 2], arr[n - 1], CAT_DIAMETERS[n - 1], target);
+    }
+    function nearestNB(d) { for (const x of CAT_DIAMETERS) if (x >= d) return x; return CAT_DIAMETERS[CAT_DIAMETERS.length - 1]; }
+
+    function runCatalogLookup() {
+      const cap = parseFloat(document.getElementById('cat_capacity').value);
+      const pres = parseFloat(document.getElementById('cat_pressure').value);
+      const vel = document.getElementById('cat_velocity').value;
+      const warn = document.getElementById('cat_warning');
+      warn.style.display = 'none';
+      if (isNaN(cap) || isNaN(pres) || cap <= 0) return;
+      const ps = CATALOG_TABLE.map(r => r.pressure);
+      const minP = ps[0], maxP = ps[ps.length - 1];
+      let lower, upper;
+      if (pres <= minP) { lower = upper = CATALOG_TABLE[0]; }
+      else if (pres >= maxP) { lower = upper = CATALOG_TABLE[CATALOG_TABLE.length - 1]; }
+      else {
+        for (let i = 0; i < CATALOG_TABLE.length - 1; i++) {
+          if (pres >= CATALOG_TABLE[i].pressure && pres <= CATALOG_TABLE[i + 1].pressure) {
+            lower = CATALOG_TABLE[i]; upper = CATALOG_TABLE[i + 1]; break;
+          }
+        }
+      }
+      if (pres < minP || pres > maxP) {
+        warn.style.display = 'block';
+        warn.innerHTML = '<strong>Pressure out of catalog range (' + minP + '\u2013' + maxP + ' bar g).</strong> Extrapolated from nearest row \u2014 verify manually.';
+      }
+      const dL = interpDia(lower.rows[vel], cap);
+      let dF = dL, detail = '';
+      if (upper !== lower) {
+        const dU = interpDia(upper.rows[vel], cap);
+        const f = (pres - lower.pressure) / (upper.pressure - lower.pressure);
+        dF = dL + f * (dU - dL);
+        detail = 'Interpolated between <strong>' + lower.pressure + ' bar(g)</strong> [d=' + dL.toFixed(1) + 'mm] and <strong>' + upper.pressure + ' bar(g)</strong> [d=' + dU.toFixed(1) + 'mm] @ ' + vel + ' m/s';
+      } else {
+        detail = 'Using <strong>' + lower.pressure + ' bar(g)</strong> row @ ' + vel + ' m/s (boundary match)';
+      }
+      document.getElementById('cat_dia').textContent = dF.toFixed(1) + ' mm';
+      document.getElementById('cat_detail').textContent = 'from Sunford printed table';
+      document.getElementById('cat_interp_detail').innerHTML = detail + '<br>' + 'Input: <strong>' + cap.toLocaleString() + '</strong> kg/hr &nbsp;|&nbsp; Pressure: <strong>' + pres + '</strong> bar(g) &nbsp;|&nbsp; Velocity: <strong>' + vel + '</strong> m/s';
+      const nb = nearestNB(dF);
+      document.getElementById('cat_nb').textContent = NB_FOR_DIA[nb] + ' (' + nb + ' mm)';
+      document.getElementById('cat_table_label').textContent = 'velocity = ' + vel + ' m/s \u2014 highlighted: ' + nb + ' mm column (' + NB_FOR_DIA[nb] + ')';
+      const badge = document.getElementById('cat_badge');
+      if (pres < minP || pres > maxP) { badge.textContent = '\u26A0 Extrapolated \u2014 verify manually'; badge.className = 'badge warn'; }
+      else { badge.textContent = '\u2713 Interpolated from Sunford Catalog'; badge.className = 'badge'; }
+      renderCatTable(vel, nb, lower.pressure, upper.pressure);
+    }
+
+    function renderCatTable(vel, hlNB, lP, uP) {
+      const thead = document.getElementById('cat_ref_thead');
+      const tbody = document.getElementById('cat_ref_tbody');
+      thead.innerHTML = '<tr><th>Pressure (bar g)</th><th>Vel (m/s)</th>' +
+        CAT_DIAMETERS.map(d => '<th' + (d === hlNB ? ' style="background:#1e8449;"' : '') + '>' + d + ' mm</th>').join('') + '</tr>';
+      tbody.innerHTML = '';
+      CATALOG_TABLE.forEach(entry => {
+        [15, 25, 40].forEach(v => {
+          if (String(v) !== vel) return;
+          const near = entry.pressure === lP || entry.pressure === uP;
+          const tr = document.createElement('tr');
+          let html = '<td class="pressure-col"' + (near ? ' style="background:#cce5ff;"' : '') + '>' + entry.pressure + '</td>';
+          html += '<td class="vel-col">' + v + '</td>';
+          entry.rows[v].forEach((c, i) => {
+            const hl = CAT_DIAMETERS[i] === hlNB;
+            html += '<td' + (hl ? ' class="highlight"' : '') + '>' + c.toLocaleString() + '</td>';
+          });
+          tr.innerHTML = html;
+          tbody.appendChild(tr);
+        });
+      });
+    }
+
+    ['cat_capacity', 'cat_pressure', 'cat_velocity'].forEach(id => {
+      document.getElementById(id).addEventListener('input', runCatalogLookup);
+      document.getElementById(id).addEventListener('change', runCatalogLookup);
+    });
+
+    // Automatically update factors and re-calculate when Valve Type or Target Velocity changes
+    ['cv_type', 'cv_velocity'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', () => { autoUpdateFactors(); runCVSizing(); });
+        el.addEventListener('change', () => { autoUpdateFactors(); runCVSizing(); });
+      }
+    });
+
+    // Init real-time calculation triggers across all inputs on key-strike and option-change
+    ['cv_flow', 'cv_p1', 'cv_p2', 'cv_fl', 'cv_fp', 'cv_margin', 'cv_fluid', 'cv_steam_type', 'cv_t1'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', runCVSizing);
+        el.addEventListener('change', runCVSizing);
+      }
+    });
+
+    // Bind change handler to fluid element to manage view properties cleanly
+    document.getElementById('cv_fluid').addEventListener('change', toggleSteamType);
+
+    runCalculator();
+    autoUpdateFactors();
+    runCVSizing();
+    syncCvPressureFromBar();
+    syncPressureFromBar();
+    runCatalogLookup();
+  </script>
+
+</body>
+
+</html>
