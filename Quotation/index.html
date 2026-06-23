@@ -979,14 +979,72 @@
       const CACHE_TS_KEY = 'sfvc_cache_ts';
 
       async function load(url) {
-        // Apps Script Web App returns JSON — no CORS issues, no public sheet needed
-        const r = await fetch(url, { redirect: 'follow' });
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        const json = await r.json();
-        if (json.error) throw new Error(json.error);
-        const rows = json.data || [];
-        try { localStorage.setItem(CACHE_KEY, JSON.stringify(rows)); localStorage.setItem(CACHE_TS_KEY, Date.now()); } catch (e) { }
-        return rows;
+        return new Promise((resolve, reject) => {
+          const callbackName = 'gviz_jsonp_' + Date.now() + '_' + Math.round(Math.random() * 1000000);
+          window[callbackName] = (json) => {
+            delete window[callbackName];
+            document.head.removeChild(script);
+
+            if (json.status === 'error') {
+              reject(new Error(json.errors[0].detailed_message || 'Google Sheet error'));
+              return;
+            }
+
+            const table = json.table;
+            const cols = table.cols.map(c => {
+              let label = (c.label || '').trim();
+              if (label.includes('Valve_Type')) return 'Valve_Type';
+              if (label.includes('Valve_Name')) return 'Valve_Name';
+              if (label.includes('Description')) return 'Description';
+              if (label.includes('MOC')) return 'MOC';
+              if (label.includes('Size')) return 'Size';
+              if (label.includes('Pressure_Class')) return 'Pressure_Class';
+              if (label.includes('End_Connection')) return 'End_Connection';
+              if (label.includes('Design_Standard')) return 'Design_Standard';
+              if (label.includes('Hydro_Test')) return 'Hydro_Test';
+              if (label.includes('Unit')) return 'Unit';
+              if (label.includes('Rate') || label.includes('Rate_INR') || label.includes('Rate (INR)')) return 'Rate';
+              if (label.includes('Status')) return 'Status';
+              if (label.includes('Last_Updated')) return 'Last_Updated';
+              if (label.includes('Remarks')) return 'Remarks';
+              return label;
+            });
+
+            const rows = [];
+            table.rows.forEach(row => {
+              const item = {};
+              let hasData = false;
+              row.c.forEach((cell, idx) => {
+                const key = cols[idx];
+                if (key) {
+                  const val = cell ? cell.v : null;
+                  item[key] = val;
+                  if (val !== null && val !== '') hasData = true;
+                }
+              });
+              if (hasData) {
+                // Standardize Rate if it is "On Request" or null
+                if (item.Rate === null || item.Rate === undefined || item.Rate === '') {
+                  item.Rate = 'On Request';
+                }
+                rows.push(item);
+              }
+            });
+
+            try { localStorage.setItem(CACHE_KEY, JSON.stringify(rows)); localStorage.setItem(CACHE_TS_KEY, Date.now()); } catch (e) { }
+            resolve(rows);
+          };
+
+          const jsonpUrl = url + '&tqx=out:json;responseHandler:' + callbackName;
+          const script = document.createElement('script');
+          script.src = jsonpUrl;
+          script.onerror = () => {
+            delete window[callbackName];
+            document.head.removeChild(script);
+            reject(new Error('Failed to load Google Sheet script (CORS/Network error).'));
+          };
+          document.head.appendChild(script);
+        });
       }
 
       function loadFromCache() {
@@ -1014,9 +1072,7 @@
     let quoteItems = [];
     const HSN_CODE = '84818030';
     const CONFIG = {
-      // ★ EDIT THIS URL: Paste your Google Apps Script Web App URL here (see setup instructions)
-      // Format: https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec
-      GOOGLE_SHEET_CSV_URL: 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'
+      GOOGLE_SHEET_CSV_URL: 'https://docs.google.com/spreadsheets/d/1YV3KxqbEooK3oIRZJMxYX3-_6QOWPrgEIAaxReH_HB8/gviz/tq?sheet=%F0%9F%93%8B%20Product%20Manager'
     };
 
     // ============================================================
